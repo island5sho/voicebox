@@ -51,7 +51,12 @@ export class Voicebox {
     if (!this.activeEngine) {
       throw new Error('No active TTS engine. Call useEngine() first.');
     }
-    return this.activeEngine.synthesize(text, options ?? {});
+    // Trim whitespace from input text to avoid silent failures or unexpected pauses
+    const sanitized = text.trim();
+    if (!sanitized) {
+      throw new Error('speak() called with empty or whitespace-only text.');
+    }
+    return this.activeEngine.synthesize(sanitized, options ?? {});
   }
 
   /**
